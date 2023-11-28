@@ -1,4 +1,6 @@
 node_modules
 .env
 dist/models/
+dist/controllers/
+dist/routes/
 
