@@ -1,5 +1,7 @@
 import { Request, Response} from 'express';
 import { PrismaClient, Task } from '@prisma/client';
+import bcrypt, { hash } from 'bcrypt'
+import { parseJsonConfigFileContent } from 'typescript';
 
 const prisma = new PrismaClient()
 
@@ -29,7 +31,8 @@ export const listUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try{
-        const { username, password, email, tasks} = req.body
+      const saltRounds = 10
+        let { username, password, email, tasks} = req.body
 
         const emailAlreadyExists = await prisma.user.findFirst({
             where: {
@@ -44,6 +47,10 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             return
         }
 
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
+        
+        password = hashedPassword
+
         const newUser = await prisma.user.create({
             data: {
               username,
@@ -52,6 +59,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
               tasks
             },
           });
+
           res.json(newUser)
     } catch(error){
         console.error('Erro ao criar o usuário:', error)
@@ -163,22 +171,32 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
     }
   }
 
+
   export const authenticateUser = async(req: Request, res: Response): Promise<void> => {
     try{
-      const { email, password } = req.body;
+      let { email, password } = req.body;
 
+      
       const user = await prisma.user.findFirst({
         where: {
-          email,
-          password
+          email
         }
       })
 
       if(!user){
         res.status(400).json({
-          message: 'Email ou senha incorretos'
+          message: 'Email não cadsatrado'
         })
         return;
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password)
+
+      if(!passwordMatch){
+        res.status(400).json({
+          message: 'Senha incorreta'
+        })
+        return
       }
 
       res.json({
