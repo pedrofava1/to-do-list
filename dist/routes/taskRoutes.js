@@ -11,4 +11,5 @@ taskRoutes.get('/users', taskController_1.listUsers);
 taskRoutes.post('/create-user', taskController_1.createUser);
 taskRoutes.post('/create-task', taskController_1.createTask);
 taskRoutes.delete('/delete-task/:id', taskController_1.deleteTask);
+taskRoutes.delete('/delete-user/:id', taskController_1.deleteUser);
 exports.default = taskRoutes;

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.createTask = exports.createUser = exports.listUsers = exports.listTasks = void 0;
+exports.deleteUser = exports.deleteTask = exports.createTask = exports.createUser = exports.listUsers = exports.listTasks = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const listTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -125,3 +125,36 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteTask = deleteTask;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = parseInt(req.params.id, 10);
+        const existingUser = yield prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
+        if (!existingUser) {
+            res.status(400).json({
+                message: 'ID do usuário inválido. Certifique-se de fornecer um ID numérico válido.'
+            });
+            return;
+        }
+        const user = yield prisma.user.delete({
+            where: {
+                id: userId,
+            },
+        });
+        res.json({
+            message: `Usuário com ID ${userId} deletado com sucesso`,
+            deletedUser: user
+        });
+    }
+    catch (error) {
+        console.error('Erro ao deletar usuário:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+    finally {
+        yield prisma.$disconnect();
+    }
+});
+exports.deleteUser = deleteUser;
