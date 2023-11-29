@@ -184,17 +184,17 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
       })
 
       if(!user){
-        res.status(400).json({
+        res.status(404).json({
           message: 'Email não cadsatrado'
         })
-        return;
+        return
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password)
 
       if(!passwordMatch){
-        res.status(400).json({
-          message: 'Senha incorreta'
+        res.status(401).json({
+          message: 'Falha na autenticação'
         })
         return
       }
@@ -212,3 +212,52 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
       await prisma.$disconnect();
     }
   }
+
+export const updateTask = async (req:Request, res: Response): Promise<void> => {
+  try {
+    const taskId = parseInt(req.params.id, 10)
+    
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId
+      }
+    })
+    if(!task){
+        res.status(404).json({
+          message: 'Tarefa não encontrada'
+        })
+    } 
+
+    const isValidStatus = ["TODO", "COMPLETED"].includes(req.body.status)
+    if(!isValidStatus) {
+      res.status(400).json({
+        message: 'Status inválido. Use TODO ou COMPLETED'
+      })
+      return;
+    }
+
+    const uptadeUser = await prisma.task.update({
+      where: {
+        id: taskId
+      },
+      data: {
+        title: req.body.title,
+        description: req.body.description,
+        status: req.body.status
+      }
+    })
+    
+      res.status(200).json({
+        message: 'Task atualizada com sucesso',
+        uptadeUser
+      })
+    }
+ 
+  catch(error) {
+    console.error('Erro ao autenticar usuário:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
+  finally{
+    await prisma.$disconnect();
+  }
+}
