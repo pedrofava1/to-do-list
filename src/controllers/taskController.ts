@@ -237,7 +237,7 @@ export const updateTask = async (req:Request, res: Response): Promise<void> => {
       return;
     }
 
-    const uptadeUser = await prisma.task.update({
+    const uptadeTask = await prisma.task.update({
       where: {
         id: taskId
       },
@@ -250,7 +250,7 @@ export const updateTask = async (req:Request, res: Response): Promise<void> => {
     
       res.status(200).json({
         message: 'Task atualizada com sucesso',
-        uptadeUser
+        uptadeTask
       })
       return;
     }
