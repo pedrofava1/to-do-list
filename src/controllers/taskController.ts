@@ -226,6 +226,7 @@ export const updateTask = async (req:Request, res: Response): Promise<void> => {
         res.status(404).json({
           message: 'Tarefa não encontrada'
         })
+        return;
     } 
 
     const isValidStatus = ["TODO", "COMPLETED"].includes(req.body.status)
@@ -251,10 +252,11 @@ export const updateTask = async (req:Request, res: Response): Promise<void> => {
         message: 'Task atualizada com sucesso',
         uptadeUser
       })
+      return;
     }
  
   catch(error) {
-    console.error('Erro ao autenticar usuário:', error);
+    console.error('Erro ao atualizar a tarefa:', error);
     res.status(500).send('Erro interno do servidor');
   }
   finally{

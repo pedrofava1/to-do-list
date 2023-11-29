@@ -245,9 +245,10 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             message: 'Task atualizada com sucesso',
             uptadeUser
         });
+        return;
     }
     catch (error) {
-        console.error('Erro ao autenticar usuário:', error);
+        console.error('Erro ao atualizar a tarefa:', error);
         res.status(500).send('Erro interno do servidor');
     }
     finally {
