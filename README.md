@@ -12,5 +12,7 @@ Esta é uma API simples para uma aplicação de lista de tarefas (ToDo List) des
 - **Cadastro de Usuários**: Crie usuários fornecendo informações como nome de usuário, senha e email.
 - **Gerenciamento de Tarefas**: Associe tarefas a usuários, definindo títulos, descrições e status (pendente ou concluído).
 - **Exclusão de Tarefas**: Remova tarefas existentes fornecendo o ID correspondente.
+- **Exclusão de Usuários**: Remove usuários existentes fornecendo o ID correspondente.
 - **Listagem de Usuários e Tarefas**: Obtenha informações sobre usuários e suas tarefas associadas.
+- **Atualizações em tarefas**: Atualize informações de suas tarefas por meio de seu ID 
 
